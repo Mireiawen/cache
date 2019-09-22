@@ -4,11 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d386df5aec0a5036079b6a04440fa3ee",
+    "content-hash": "f3b6ba23b200d67a662502690b205203",
     "packages": [
         {
             "name": "phpfastcache/phpfastcache",
-            "version": "dev-master",
+            "version": "7.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPSocialNetwork/phpfastcache.git",
@@ -204,9 +204,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "phpfastcache/phpfastcache": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
