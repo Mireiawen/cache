@@ -1,0 +1,23 @@
+{
+	"name": "mireiawen/cache",
+	"description": "A wrapper for the PhpFastCache caching backends",
+	"type": "library",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Mira Manninen",
+			"email": "mir@mireiawen.net"
+		}
+	],
+	"minimum-stability": "dev",
+	"require": {
+		"php": ">=7.3.0",
+		"ext-gettext": "*",
+		"phpfastcache/phpfastcache": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"Mireiawen\\Cache\\": "includes/"
+		}
+	}
+}
