@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Mireiawen\Cache;
 
 // Load the cache backend handler
+use Phpfastcache\Drivers\Files\Config;
 use Phpfastcache\Exceptions\PhpfastcacheDriverCheckException;
 use Phpfastcache\Exceptions\PhpfastcacheLogicException;
 use Phpfastcache\Exceptions\PhpfastcacheSimpleCacheException;
@@ -45,44 +46,55 @@ class Cache
 		switch ($driver)
 		{
 		case 'files':
-			$path = $this->ReadConfigVariable($config, 'path', NULL, TRUE);
-			$this->backend = new Psr16Adapter($driver, ['path' => $path]);
+			$configuration = new Config();
+			$configuration->setPath($this->ReadConfigVariable($config, 'path', NULL, TRUE));
 			break;
 		
 		case 'memcache':
+			$configuration = new \Phpfastcache\Drivers\Memcache\Config();
+			break;
+		
 		case 'memcached':
-			$host = $this->ReadConfigVariable($config, 'host', 'localhost');
-			$port = $this->ReadConfigVariable($config, 'port', 11211);
-			$this->backend = new Psr16Adapter(
-				$driver,
-				[
-					'host' => $host,
-					'port' => $port,
-				]
-			);
+			$configuration = new \Phpfastcache\Drivers\Memcached\Config();
 			break;
 		
 		case 'redis':
+			$configuration = new \Phpfastcache\Drivers\Redis\Config();
+			break;
+		
 		case 'predis':
-			$host = $this->ReadConfigVariable($config, 'host', 'localhost');
-			$port = $this->ReadConfigVariable($config, 'port', 6379);
-			$password = $this->ReadConfigVariable($config, 'password');
-			$database = $this->ReadConfigVariable($config, 'database');
-			
-			$this->backend = new Psr16Adapter(
-				$driver,
-				[
-					'host' => $host,
-					'port' => $port,
-					'password' => $password,
-					'database' => $database,
-				]
-			);
+			$configuration = new \Phpfastcache\Drivers\Predis\Config();
 			break;
 		
 		default:
 			throw new \Exception(\sprintf(\_('Unknown cache driver %s'), $driver));
 		}
+		
+		if ($driver === 'memcache' || $driver === 'memcached')
+		{
+			$configuration->setHost($this->ReadConfigVariable($config, 'host', 'localhost'));
+			$configuration->setPort($this->ReadConfigVariable($config, 'port', 11211));
+		}
+		
+		if ($driver === 'redis' || $driver === 'predis')
+		{
+			$configuration->setHost($this->ReadConfigVariable($config, 'host', 'localhost'));
+			$configuration->setPort($this->ReadConfigVariable($config, 'port', 6379));
+			
+			$password = $this->ReadConfigVariable($config, 'password');
+			if ($password !== NULL)
+			{
+				$configuration->setPassword($password);
+			}
+			
+			$database = $this->ReadConfigVariable($config, 'database');
+			if ($database !== NULL)
+			{
+				$configuration->setDatabase($database);
+			}
+		}
+		
+		$this->backend = new Psr16Adapter($driver, $configuration);
 	}
 	
 	/**
